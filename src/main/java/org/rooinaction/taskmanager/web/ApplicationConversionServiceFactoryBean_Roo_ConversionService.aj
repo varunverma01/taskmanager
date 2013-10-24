@@ -4,7 +4,7 @@
 package org.rooinaction.taskmanager.web;
 
 import org.rooinaction.taskmanager.model.Task;
-import org.rooinaction.taskmanager.repository.TaskRepository;
+import org.rooinaction.taskmanager.service.TaskService;
 import org.rooinaction.taskmanager.web.ApplicationConversionServiceFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -16,7 +16,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     declare @type: ApplicationConversionServiceFactoryBean: @Configurable;
     
     @Autowired
-    TaskRepository ApplicationConversionServiceFactoryBean.taskRepository;
+    TaskService ApplicationConversionServiceFactoryBean.taskService;
     
     public Converter<Task, String> ApplicationConversionServiceFactoryBean.getTaskToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<org.rooinaction.taskmanager.model.Task, java.lang.String>() {
@@ -29,7 +29,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public Converter<Long, Task> ApplicationConversionServiceFactoryBean.getIdToTaskConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, org.rooinaction.taskmanager.model.Task>() {
             public org.rooinaction.taskmanager.model.Task convert(java.lang.Long id) {
-                return taskRepository.findOne(id);
+                return taskService.findTask(id);
             }
         };
     }
