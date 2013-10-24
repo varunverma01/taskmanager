@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Thu Oct 24 14:46:20 IST 2013:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.2.2 - (1181258): instance a816c00e-0141-e9c0-0fa4-0000032315f8 
+on database directory C:\Users\priyam\Desktop\Personal\taskmanager\taskmanager  with class loader WebAppClassLoader=taskmanager@51df3082 
+Loaded from file:/C:/Users/priyam/.m2/repository/org/apache/derby/derby/10.8.2.2/derby-10.8.2.2.jar
+java.vendor=Sun Microsystems Inc.
+java.runtime.version=1.6.0_45-b06
+user.dir=C:\Users\priyam\Desktop\Personal\taskmanager
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
