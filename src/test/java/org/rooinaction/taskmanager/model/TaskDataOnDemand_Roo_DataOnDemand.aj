@@ -12,6 +12,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.rooinaction.taskmanager.model.Task;
 import org.rooinaction.taskmanager.model.TaskDataOnDemand;
+import org.rooinaction.taskmanager.repository.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 privileged aspect TaskDataOnDemand_Roo_DataOnDemand {
@@ -21,6 +23,9 @@ privileged aspect TaskDataOnDemand_Roo_DataOnDemand {
     private Random TaskDataOnDemand.rnd = new SecureRandom();
     
     private List<Task> TaskDataOnDemand.data;
+    
+    @Autowired
+    TaskRepository TaskDataOnDemand.taskRepository;
     
     public Task TaskDataOnDemand.getNewTransientTask(int index) {
         Task obj = new Task();
@@ -52,14 +57,14 @@ privileged aspect TaskDataOnDemand_Roo_DataOnDemand {
         }
         Task obj = data.get(index);
         Long id = obj.getId();
-        return Task.findTask(id);
+        return taskRepository.findOne(id);
     }
     
     public Task TaskDataOnDemand.getRandomTask() {
         init();
         Task obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return Task.findTask(id);
+        return taskRepository.findOne(id);
     }
     
     public boolean TaskDataOnDemand.modifyTask(Task obj) {
@@ -69,7 +74,7 @@ privileged aspect TaskDataOnDemand_Roo_DataOnDemand {
     public void TaskDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = Task.findTaskEntries(from, to);
+        data = taskRepository.findAll(new org.springframework.data.domain.PageRequest(from / to, to)).getContent();
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'Task' illegally returned null");
         }
@@ -81,7 +86,7 @@ privileged aspect TaskDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             Task obj = getNewTransientTask(i);
             try {
-                obj.persist();
+                taskRepository.save(obj);
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -90,7 +95,7 @@ privileged aspect TaskDataOnDemand_Roo_DataOnDemand {
                 }
                 throw new IllegalStateException(msg.toString(), e);
             }
-            obj.flush();
+            taskRepository.flush();
             data.add(obj);
         }
     }
